@@ -1,0 +1,14 @@
+body{
+	padding-top: 80px;
+}
+.book{
+	max-height: 500px;
+}
+.book img{
+	max-width: 300px;
+	max-height: 200px;
+}
+.book h4{
+	margin-top: 15px;
+	color: #5bc0de; 
+}
