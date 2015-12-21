@@ -1,6 +1,5 @@
 var bookModel = require('../models/bookModel.js');
 var categoryModel = require('../models/categoryModel.js');
-
 /**
  * categoryController.js
  *
@@ -37,7 +36,7 @@ module.exports = {
                     message: 'Error getting book.'
                 });
             }
-            return res.json(books);
+            return res.render('books/index', {books: books, title: 'Listado de libros'});
         });
     },
 
@@ -49,32 +48,33 @@ module.exports = {
         bookModel.findOne({_id: id}, function(err, book){
             if(err) {
                 return res.json(500, {
-                    message: 'Error getting book.'
+                    message: 'Error obteniendo el Libro.'
                 });
             }
             if(!book) {
                 return res.json(404, {
-                    message: 'No such book'
+                    message: 'Libro No Encontrado'
                 });
             }
-            return res.json(book);
+            return res.render('books/edit',{book : book, title: 'editar Libro' +book.title});
         });
     },
 
     /**
      * bookController.create()
      */
-    create: function(req, res) {
-        var book = new bookModel({
+    create: function(req, res, next) {
+        
+        var books = new bookModel({
 			title : req.body.title,
 			description : req.body.description,
 			author : req.body.author,
 			price : req.body.price,
 			quantity : req.body.quantity,
-			category : req.body.category
+			category : req.body.category,
+            cover : req.file.filename
         });
-
-        book.save(function(err, book){
+        books.save(function(err, books){
             if(err) {
                 return res.json(500, {
                     message: 'Error saving book',
@@ -83,7 +83,7 @@ module.exports = {
             }
             return res.json({
                 message: 'saved',
-                _id: book._id
+                _id: books._id
             });
         });
     },
@@ -91,18 +91,18 @@ module.exports = {
     /**
      * bookController.update()
      */
-    update: function(req, res) {
+    update: function(req, res, next) {
         var id = req.params.id;
         bookModel.findOne({_id: id}, function(err, book){
             if(err) {
                 return res.json(500, {
-                    message: 'Error saving book',
+                    message: 'Error Buscando el Libro',
                     error: err
                 });
             }
             if(!book) {
                 return res.json(404, {
-                    message: 'No such book'
+                    message: 'Libro no encontrado'
                 });
             }
 
@@ -112,19 +112,20 @@ module.exports = {
 			book.price =  req.body.price ? req.body.price : book.price;
 			book.quantity =  req.body.quantity ? req.body.quantity : book.quantity;
 			book.category =  req.body.category ? req.body.category : book.category;
-			
+			//book.cover =     req.file.filename ? req.file.filename : book.cover; 
             book.save(function(err, book){
                 if(err) {
                     return res.json(500, {
-                        message: 'Error getting book.'
+                        message: 'Error obteniendo el Libro.'
                     });
                 }
                 if(!book) {
                     return res.json(404, {
-                        message: 'No such book'
+                        message: 'EL Libro no existe'
                     });
                 }
-                return res.json(book);
+                return res.json({message: "Libro modificado"});
+                //return res.render('books/edit',{book : book, title: 'editar Libro' +book.title});
             });
         });
     },
@@ -137,7 +138,7 @@ module.exports = {
         bookModel.findByIdAndRemove(id, function(err, book){
             if(err) {
                 return res.json(500, {
-                    message: 'Error getting book.'
+                    message: 'Error obteniendo el Libro.'
                 });
             }
             return res.json(book);

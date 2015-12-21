@@ -1,6 +1,18 @@
 var express = require('express');
 var router = express.Router();
+var multer = require('multer');
 var bookController = require('../controllers/bookController.js');
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/images/books/'); // Directirio donde se guardaran los archivos.
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now()+file.originalname);
+  }
+})
+
+var upload = multer({ storage: storage });
 
 /*
  * GET
@@ -23,21 +35,21 @@ router.get('/:id', function(req, res) {
 /*
  * POST
  */
-router.post('/', function(req, res) {
+router.post('/', upload.single('cover'), function(req, res) {
     bookController.create(req, res);
 });
 
 /*
  * PUT
  */
-router.put('/:id', function(req, res) {
+router.post('/:id', upload.single('cover'),function(req, res) {
     bookController.update(req, res);
 });
 
 /*
  * DELETE
  */
-router.delete('/:id', function(req, res) {
+router.get('/:id/delete', function(req, res) {
     bookController.remove(req, res);
 });
 

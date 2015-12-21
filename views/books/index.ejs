@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	  <% include ../partials/head %>
+</head>
+<body>
+	<% include ../partials/nav %>
+	<div class="container">
+		<div class="row">
+			<h2>Lista de libros</h2>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Titulo</th>
+					<th>Autor</th>
+					<th>Precio</th>
+					<th>Acción</th>
+				</tr>
+			<tbody>
+				<% books.forEach(function(book){ %>
+					<tr>
+						<td><%= book.title	%></td>
+						<td> <%= book.author %></td>
+						<td> <%= book.price %></td>
+						<td> 
+							<a href="/books/<%= book._id %>" class="btn btn-info">Editar</a>
+							<a href="/books/<%= book._id %>/delete" class="btn btn-warning">Eliminar</a>
+						</td>
+					</tr>
+				<% }); %>
+			</tbody>
+			</thead>
+		</table>
+
+	</div>
+	
+</body>
+</html>
